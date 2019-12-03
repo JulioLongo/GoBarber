@@ -5,8 +5,8 @@ class appointments extends Model {
     // Chamar init da classe Model
     super.init(
       {
-        date: Sequelize.STRING,
-        canceled_at: Sequelize.STRING,
+        date: Sequelize.DATE,
+        canceled_at: Sequelize.DATE,
       },
       {
         sequelize,

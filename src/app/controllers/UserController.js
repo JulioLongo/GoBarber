@@ -17,11 +17,10 @@ class UserController {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
-    // Procura se existe alguem com email
+    // Procura se existe o email ja cadastrado
     const userExist = await User.findOne({ where: { email: req.body.email } });
 
     if (userExist) {
-      // bloqueia o fluxo
       return res.status(400).json({ error: 'User alaready exists' });
     }
 
@@ -34,10 +33,11 @@ class UserController {
     });
   }
 
-  // nao acessiveis para usuarios nao logados
+  // Não acessivel para usuários não logados
   async update(req, res) {
-    // console.log(req.userId);
+    console.log(req.userId);
 
+    // Formato do JSON
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
@@ -45,10 +45,11 @@ class UserController {
       password: Yup.string()
         .min(6)
         .when('oldPassword', (oldPassword, field) =>
+          // Se oldPassword estiver preenchida, password is required, senão retorna field como estava
           oldPassword ? field.required() : field
         ),
       confirmPassword: Yup.string().when('password', (password, field) =>
-        // se o password tiver preenchido, confirm password vai ser obrigatorio e ele precisa ser igual ao password senao retorna o field
+        // Se o password tiver preenchido, confirm password is required e ele precisa ser igual ao password senao retorna o field
         password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
     });
@@ -57,9 +58,10 @@ class UserController {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
-    const { email, oldPassword } = req.body;
-
+    // Procurar por usuario que tenha o req ID pela auth
     const user = await User.findByPk(req.userId);
+
+    const { email, oldPassword } = req.body;
 
     if (email !== user.email) {
       const userExist = await User.findOne({ where: { email } });
@@ -69,11 +71,12 @@ class UserController {
       }
     }
 
-    // só fazer esse request se ele informou senha antiga
+    // Só fazer esse request se ele informou senha antiga
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
+    // Atualizar user com o reqBody
     const { id, name, provider } = await user.update(req.body);
 
     return res.json({

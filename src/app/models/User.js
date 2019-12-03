@@ -17,7 +17,7 @@ class users extends Model {
       }
     );
 
-    // antes de usuario ser inserido no banco de dados
+    // Criptografar antes de usuario ser inserido no banco de dados
     this.addHook('beforeSave', async user => {
       if (user.password) {
         user.password_hash = await bcrypt.hash(user.password, 8);
@@ -31,7 +31,7 @@ class users extends Model {
     this.belongsTo(models.files, { foreignKey: 'avatar_id', as: 'avatar' });
   }
 
-  // Verificacao de senha
+  // Verificar com bcrypt se a senha como parametro bate com a hash para criar sessão
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }

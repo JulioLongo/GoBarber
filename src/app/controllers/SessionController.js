@@ -1,4 +1,4 @@
-// gerar token jwt
+// Gerar token jwt para autenticação
 import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
 import authConfig from '../../config/auth';
@@ -20,19 +20,19 @@ class SessionController {
 
     const { email, password } = req.body;
 
-    // verificar se existe o email
+    // verificar se existe o email cadastrado
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
 
-    // verificar se senha bate
+    // Verificar se a senha bate com a cadastrada com cripto
     if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    // destruturar user e retornar user + token;
+    // Destruturar user e retornar user + token;
     const { id, name } = user;
 
     return res.json({

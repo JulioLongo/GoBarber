@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import User from '../models/User';
 import Appointment from '../models/Appointment';
 
+// Pegar o agendamento na visão do prestador de servico
 class ScheduleController {
   async index(req, res) {
     const checkUserProvider = await User.findOne({
@@ -14,7 +15,7 @@ class ScheduleController {
       return res.status(401).json({ error: 'User is not a provider' });
     }
 
-    // pegar a data enviada no request
+    // pegar a Data enviada no request
     const { date } = req.query;
     const parsedDate = parseISO(date);
 

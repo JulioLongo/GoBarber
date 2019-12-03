@@ -1,6 +1,7 @@
 import User from '../models/User';
 import File from '../models/File';
 
+// Seleciona todos os users que são provider, Associando com File pela coluna avatar_id
 class ProviderController {
   async index(req, res) {
     const providers = await User.findAll({
